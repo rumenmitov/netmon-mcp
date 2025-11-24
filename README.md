@@ -27,16 +27,17 @@ The tool returns **packets per second** (averaged over 5 seconds).
 ## Project Structure
 
 ```
-mcp-test/
+netmon-mcp/
 │
 ├── main.go                   # MCP server entry point
 ├── go.mod / go.sum           # Go dependencies
 │
-├── ebpf/
-    ├── netmonitor.c          # eBPF XDP program (C)
-    ├── netmon_bpfel.go       # Auto-generated BPF bindings
-    ├── netmon_bpfel.o        # Compiled ELF object
-    └── networkutils.go       # Go wrapper for eBPF loading & traffic monitoring
+├── netmon/
+    ├── include                 # header files
+    ├── netmon.c                # eBPF XDP program (C)
+    ├── netmon_bpfel.go         # Auto-generated BPF bindings
+    ├── netmon_bpfel.o          # Compiled ELF object
+    └── netmon.go               # Go wrapper for eBPF loading & traffic monitoring
 
 ```
 
