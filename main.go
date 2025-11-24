@@ -23,6 +23,7 @@ func main() {
 		server.WithToolCapabilities(true),
 		server.WithRecovery(),
 	)
+	iface := os.Getenv("NET_IFACE")
 	transport := os.Getenv("MCP_TRANSPORT")
 	port := os.Getenv("MCP_PORT")
 	if port == "" {
@@ -31,12 +32,21 @@ func main() {
 
 	netTool := mcp.NewTool("network-monitor",
 		mcp.WithDescription("Monitor network traffic."),
-		mcp.WithString("network_operation",
+		mcp.WithString("operation",
 			mcp.Required(),
 			mcp.Enum("incoming", "outgoing"),
 			mcp.Description(`The incoming operation measures the number of packets 
 				received per second (in the timespan of 5 seconds). 
 				The outgoing operation checks for any new TCP connections.`),
+		),
+		mcp.WithString("interface",
+		  mcp.DefaultString(iface),
+			mcp.Required(),
+			mcp.Description(`The network interface on which to attach the XDP program.`),
+		),
+		mcp.WithNumber("duration",
+			mcp.DefaultNumber(5),
+			mcp.Description(`The duration in seconds when checking for incoming packets.`),
 		),
 	)
 
@@ -67,7 +77,17 @@ func main() {
 
 func handleNetworkTraffic(ctx context.Context, req mcp.CallToolRequest) (*mcp.CallToolResult, error) {
 	// Extract parameters using helper methods
-	operation, err := req.RequireString("network_operation")
+	operation, err := req.RequireString("operation")
+	if err != nil {
+		return mcp.NewToolResultError(err.Error()), nil
+	}
+
+	netInterface, err := req.RequireString("interface")
+	if err != nil {
+		return mcp.NewToolResultError(err.Error()), nil
+	}
+
+	duration, err := req.RequireInt("duration")
 	if err != nil {
 		return mcp.NewToolResultError(err.Error()), nil
 	}
@@ -76,7 +96,7 @@ func handleNetworkTraffic(ctx context.Context, req mcp.CallToolRequest) (*mcp.Ca
 
 	switch operation {
 	case "incoming":
-		result, err = netmon.IncomingPacketsPerSecond()
+		result, err = netmon.IncomingPacketsPerSecond(netInterface, duration)
 		if err != nil {
 			return mcp.NewToolResultError(err.Error()), nil
 		}

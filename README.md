@@ -1,4 +1,4 @@
-![Example Usage](./assets/example.png)
+![netmon-mcp Logo](./assets/logo.png)
 
 A proof-of-concept to demonstrate the combinination of the 
 ergonomic UI of AI agents with the power of the Linux kernel! 
@@ -13,27 +13,8 @@ The operations currently supported by **netmon-mcp** are `incoming` and `ougoing
 - `incoming`    returns the number of igress packets per second (measured in the span of 5 seconds).
 - `ougoing`     waits until a new TCP connection is established and returns the connection details (IPv4, ports, etc.).
 
-## Project Structure
-
-```
-netmon-mcp/
-│
-├── main.go                   # MCP server entry point
-├── go.mod / go.sum           # Go dependencies
-│
-├── ebpf/
-    ├── netmon.c              # eBPF XDP program
-    ├── netmon_bpfel.go       # Auto-generated BPF bindings
-    ├── netmon_bpfel.o        # Compiled ELF object
-    ├── netmon.go       # Go wrapper for eBPF loading & traffic monitoring
-    ├── include
-        ├── bpf_endian.h      # Libraries to simplify structs
-        ├── bpf_helper_defs.h
-        ├── bpf_helpers.h
-        ├── bpf_tracing.h
-        ├── common.h
-        └── LICENSE.BSD-2-Clause
-```
+![Example Usage](./assets/example.png)
+> Example via opencode.
 
 ## Requirements
 
@@ -62,6 +43,13 @@ To regenerate the BPF bindings:
 go generate ./...
 ```
 
+You may optionally set the environment variables:
+```bash
+cp env.example .env
+# Fill out .env
+. ./.env
+```
+
 ## Running the MCP Server
 
 ### 1. Build
@@ -74,6 +62,28 @@ Because XDP requires privileged access:
 
 ```bash
 sudo ./netmon-mcp
+```
+
+## Project Structure
+
+```
+netmon-mcp/
+│
+├── main.go                   # MCP server entry point
+├── go.mod / go.sum           # Go dependencies
+│
+├── ebpf/
+    ├── netmon.c              # eBPF XDP program
+    ├── netmon_bpfel.go       # Auto-generated BPF bindings
+    ├── netmon_bpfel.o        # Compiled ELF object
+    ├── netmon.go       # Go wrapper for eBPF loading & traffic monitoring
+    ├── include
+        ├── bpf_endian.h      # Libraries to simplify structs
+        ├── bpf_helper_defs.h
+        ├── bpf_helpers.h
+        ├── bpf_tracing.h
+        ├── common.h
+        └── LICENSE.BSD-2-Clause
 ```
 
 ## How the Project Works (Current State)
