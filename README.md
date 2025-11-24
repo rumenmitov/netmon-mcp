@@ -174,7 +174,6 @@ Opencode automatically connects via **stdio** (you can find an example configura
     - [ ] MCP gateway (non-root)
     - [ ] Privileged daemon (root)
 - [ ] Add HTTP transport
-- [ ] Add outgoing traffic monitoring
 - [ ] Docker support
 - [ ] Remote monitoring via SSH or HTTP tunnel
 
