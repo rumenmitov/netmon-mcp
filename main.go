@@ -11,8 +11,11 @@ import (
 	//"time"
 	"github.com/mark3labs/mcp-go/mcp"
 	"github.com/mark3labs/mcp-go/server"
+
+	"mcp-test/ebpf"
 )
 
+//go:generate go tool bpf2go -tags linux -go-package ebpf -output-dir ebpf/ netmon ebpf/netmonitor.c
 func main() {
 	// Create MCP Server instance
 	s := server.NewMCPServer("HTTP-test-mcp_server",
@@ -31,8 +34,8 @@ func main() {
 		mcp.WithString("network_operation",
 			mcp.Required(),
 			mcp.Enum("incoming", "outgoing"),
-			mcp.Description("Network traffic to monitor.")
-		)
+			mcp.Description("Network traffic to monitor."),
+		),
 	)
 
 	s.AddTool(netTool, handleNetworkTraffic)
@@ -68,11 +71,13 @@ func handleNetworkTraffic(ctx context.Context, req mcp.CallToolRequest) (*mcp.Ca
 		return mcp.NewToolResultError(err.Error()), nil
 	}
 
+	var result float32
+
 	switch operation {
 	case "incoming":
-		result = x + y
+		result = ebpf.IncomingPacketsPerSecond()
 	case "outgoing":
-		result = x - y
+		return mcp.NewToolResultError(fmt.Sprintf("unknown operation: %s", operation)), nil
 	default:
 		return mcp.NewToolResultError(fmt.Sprintf("unknown operation: %s", operation)), nil
 	}
