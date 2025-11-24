@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 ![Example Usage](./assets/example.png)
 
 A proof-of-concept to demonstrate the combinination of the 
@@ -22,7 +21,6 @@ netmon-mcp/
 ├── main.go                   # MCP server entry point
 ├── go.mod / go.sum           # Go dependencies
 │
-<<<<<<< HEAD
 ├── ebpf/
     ├── netmon.c              # eBPF XDP program
     ├── netmon_bpfel.go       # Auto-generated BPF bindings
@@ -35,15 +33,6 @@ netmon-mcp/
         ├── bpf_tracing.h
         ├── common.h
         └── LICENSE.BSD-2-Clause
-=======
-├── netmon/
-    ├── include                 # header files
-    ├── netmon.c                # eBPF XDP program (C)
-    ├── netmon_bpfel.go         # Auto-generated BPF bindings
-    ├── netmon_bpfel.o          # Compiled ELF object
-    └── netmon.go               # Go wrapper for eBPF loading & traffic monitoring
-
->>>>>>> d3bdb573cadffd41118cbaba3f1e2d80adf34e0a
 ```
 
 ## Requirements
@@ -108,7 +97,7 @@ mcp.NewTool("network-monitor", ...)
 ```
 
 ### 3. eBPF Logic
-When the tool is executed:
+When the `incoming` operation is executed:
 
 1. The Go program loads the auto-generated eBPF objects
 2. XDP program attaches to the network interface
@@ -119,8 +108,21 @@ This is done in:
 
 ```go
 ebpf.IncomingPacketsPerSecond()
+```  
+  
+When the `outgoing` operation is executed:
+
+1. The Go program loads the auto-generated eBPF objects
+2. Tracing program attaches to the network network stack
+3. Go program waits for a new TCP connection to be established
+
+This is done in:
+
+```go
+ebpf.MonitorTcpConnections()
 ```
 
+### Common Pitfalls
 If MEMLOCK ulimit is too low, fix:
 
 ```bash
