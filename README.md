@@ -175,10 +175,13 @@ Opencode automatically connects via **stdio** (you can find an example configura
     - [ ] Privileged daemon (root)
 - [ ] Add HTTP transport
 - [ ] Add outgoing traffic monitoring
-- [ ] Interface auto-detection
 - [ ] Docker support
 - [ ] Remote monitoring via SSH or HTTP tunnel
 
 ## License
 
-MIT License
+![GitHub License](https://img.shields.io/github/license/klefterov15/netmon-mcp?style=for-the-badge&logo=mit&color=orange)
+
+## Authors
+- Kaloyan Lefterov
+- Rumen Mitov
